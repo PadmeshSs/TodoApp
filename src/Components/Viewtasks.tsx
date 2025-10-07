@@ -1,13 +1,15 @@
+
 import type { Task } from "../App";
 
 type viewtask = {
-    tasks: Task[] | null,
-    settasks: React.Dispatch<React.SetStateAction<Task[] | null>>
+    tasks: Task[],
+    settasks: React.Dispatch<React.SetStateAction<Task[]>>
 };
 
 export default function Viewtasks({tasks, settasks}: viewtask){
 
-
+    console.log(tasks);
+    
 
     return(
         <>

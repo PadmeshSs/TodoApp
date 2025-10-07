@@ -3,6 +3,7 @@ import './App.css'
 import Addtasks from './Components/Addtasks'
 import { useState } from 'react'
 
+
 export type Task = {
     id: number,
     title: string,
@@ -11,15 +12,18 @@ export type Task = {
     status: string
 };
 
+
+
+
 function App(){
-  
-  let [tasks, settasks] = useState<Task[] | null>([]);
+
+  let [tasks, settasks] = useState<Task[]>([]);
 
   return (
     <>
     <div className="app-body p-5 w-[600px]">
       <h1 className='text-3xl font-semibold'>Todo Application</h1>
-      <Addtasks />
+      <Addtasks tasks={tasks} settasks={settasks}/>
       <Viewtasks tasks={tasks} settasks={settasks}/>
     </div>
      
