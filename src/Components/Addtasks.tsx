@@ -1,5 +1,5 @@
 import type { Task } from "../App";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type viewtask = {
     tasks: Task[],
@@ -8,11 +8,17 @@ type viewtask = {
 
 export default function Addtasks({tasks, settasks}: viewtask){
 
+    type taskstatus = "Pending" | "Completed" | "In Progress";
+
     let [date, setdate] = useState<string>("");
     let [title, settitle] = useState<string>("");
     let [description, setdescription] = useState<string>("");
-    let [status, setstatus] = useState<string>("");
+    let [status, setstatus] = useState<taskstatus>("Pending");
     let [isadded, setisadded] = useState<boolean>(false);
+
+    useEffect(()=>{
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+    }, [tasks])
 
 
     return(
@@ -21,8 +27,10 @@ export default function Addtasks({tasks, settasks}: viewtask){
             <form action="" onSubmit={(e)=>{
                     e.preventDefault(); 
                     const now = new Date();
+                    now.setHours(0,0,0,0);
                     const selectedDate = new Date(date);
-                    if (selectedDate <= now){
+                    selectedDate.setHours(0,0,0,0);
+                    if (selectedDate < now){
                         window.alert("Please select a future date");
                         return;
                     }
@@ -30,7 +38,12 @@ export default function Addtasks({tasks, settasks}: viewtask){
                     setInterval(() => {
                         setisadded(false);
                     }, 3000);
-                    settasks([...tasks, {id: tasks.length>0 ? tasks.length+1 : 1, title:title, description:description, dueDate:date, status:status}])}}>
+                    settasks([...tasks, {id: tasks.length>0 ? tasks.length+1 : 1, title:title, description:description, dueDate:date, status:status}])
+                    setdate("");
+                    settitle("");
+                    setdescription("");
+                    setstatus("Pending");
+                }}>
                 <div className="mb-5">
                     <label htmlFor="title" className="font-semibold text-[20px]">Title</label><br />
                     <input type="text" value={title} required onChange={(e)=>{settitle(e.target.value)}} id="title" className="border-[2px] border-[#c1c1c1] w-full h-[30px] rounded-md"/>
@@ -45,13 +58,17 @@ export default function Addtasks({tasks, settasks}: viewtask){
                 </div>
                 <div className="mb-5">
                     <label htmlFor="status" className="font-semibold text-[20px]">Set Status</label><br />
-                    <select id="status" name="status" required value={status} onChange={(e)=>{setstatus(e.target.value)}} className="border-[2px] border-[#c1c1c1] w-full h-[30px] rounded-md mb-3">
+                    <select id="status" name="status" required value={status} onChange={(e)=>{setstatus(e.target.value as taskstatus)}} className="border-[2px] border-[#c1c1c1] w-full h-[30px] rounded-md mb-3">
                         <option value="Pending">Pending</option>
                         <option value="Completed">Completed</option>
                         <option value="In Progress">In Progress</option>
                     </select>
                 </div>
-                <button className="bg-[#08f] text-white px-5 py-2 hover:cursor-pointer mb-5 hover:bg-[#046ecc] rounded-xl" type="submit">Add Task</button>   
+                <button className="bg-[#08f] text-white px-5 py-2 hover:cursor-pointer mb-5 hover:bg-[#046ecc] rounded-xl" type="submit">Add Task</button>  
+                <button className="bg-[#08f] text-white px-5 py-2 hover:cursor-pointer ml-5 mb-5 hover:bg-[#046ecc] rounded-xl" onClick={(e)=>{
+                    localStorage.removeItem("tasks");
+                    settasks([]);
+                }}>Reset</button>
             </form>
 
             <div className={`mb-5 notify bg-green-300 text-green-900 px-5 py-2` + (isadded ? ' block' : ' hidden')}>
