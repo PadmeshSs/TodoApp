@@ -2,6 +2,7 @@ import Viewtasks from './Components/Viewtasks'
 import './App.css'
 import Addtasks from './Components/Addtasks'
 import { useState } from 'react'
+import { Variableprovider } from './Components/Variablecontext'
 
 
 export type Task = {
@@ -35,10 +36,13 @@ function App(){
 
   return (
     <>
-    <div className="app-body p-5 w-fit">
+    <div className="app-body p-5 w-full">
       <h1 className='text-3xl font-semibold'>Todo Application</h1>
-      <Addtasks tasks={tasks} settasks={settasks}/>
-      <Viewtasks tasks={tasks} settasks={settasks}/>
+      <Variableprovider>
+        <Addtasks tasks={tasks} settasks={settasks}/>
+        <Viewtasks tasks={tasks} settasks={settasks}/>
+      </Variableprovider>  
+
     </div>
      
     </>

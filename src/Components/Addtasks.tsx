@@ -1,5 +1,6 @@
 import type { Task } from "../App";
-import { useEffect, useState } from "react";
+import { variablecontext } from "./Variablecontext";
+import { useContext, useEffect, useState } from "react";
 
 type viewtask = {
     tasks: Task[],
@@ -8,13 +9,22 @@ type viewtask = {
 
 export default function Addtasks({tasks, settasks}: viewtask){
 
-    type taskstatus = "Pending" | "Completed" | "In Progress";
+    const context = useContext(variablecontext);
+    if (!context) {
+        throw new Error("Context not found");
+    }
 
-    let [date, setdate] = useState<string>("");
-    let [title, settitle] = useState<string>("");
-    let [description, setdescription] = useState<string>("");
-    let [status, setstatus] = useState<taskstatus>("Pending");
-    let [isadded, setisadded] = useState<boolean>(false);
+    const {date, setdate, title, settitle, description, setdescription, status, setstatus, msg, setmsg, isadded, setisadded} = context;
+    const clear = () =>{
+        setdate("");
+        settitle("");
+        setdescription("");
+        setstatus("Pending");
+    }
+    
+    useEffect(()=>{
+        clear();
+    }, []);
 
     useEffect(()=>{
         localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -34,9 +44,11 @@ export default function Addtasks({tasks, settasks}: viewtask){
                         window.alert("Please select a future date");
                         return;
                     }
+                    setmsg("Task added successfully");
                     setisadded(true);
                     setInterval(() => {
                         setisadded(false);
+                        setmsg("");
                     }, 3000);
                     settasks([...tasks, {id: tasks.length>0 ? tasks.length+1 : 1, title:title, description:description, dueDate:date, status:status}])
                     setdate("");
@@ -58,21 +70,21 @@ export default function Addtasks({tasks, settasks}: viewtask){
                 </div>
                 <div className="mb-5">
                     <label htmlFor="status" className="font-semibold text-[20px]">Set Status</label><br />
-                    <select id="status" name="status" required value={status} onChange={(e)=>{setstatus(e.target.value as taskstatus)}} className="border-[2px] border-[#c1c1c1] w-full h-[30px] rounded-md mb-3">
+                    <select id="status" name="status" required value={status} onChange={(e)=>{setstatus(e.target.value as typeof status)}} className="border-[2px] border-[#c1c1c1] w-full h-[30px] rounded-md mb-3">
                         <option value="Pending">Pending</option>
                         <option value="Completed">Completed</option>
                         <option value="In Progress">In Progress</option>
                     </select>
                 </div>
                 <button className="bg-[#08f] text-white px-5 py-2 hover:cursor-pointer mb-5 hover:bg-[#046ecc] rounded-xl" type="submit">Add Task</button>  
-                <button className="bg-[#08f] text-white px-5 py-2 hover:cursor-pointer ml-5 mb-5 hover:bg-[#046ecc] rounded-xl" onClick={(e)=>{
+                <button className="bg-[#08f] text-white px-5 py-2 hover:cursor-pointer ml-5 mb-5 hover:bg-[#046ecc] rounded-xl" onClick={()=>{
                     localStorage.removeItem("tasks");
                     settasks([]);
                 }}>Reset</button>
             </form>
 
             <div className={`mb-5 notify bg-green-300 text-green-900 px-5 py-2` + (isadded ? ' block' : ' hidden')}>
-                Updated Successfully!
+                {msg}
             </div>
         </div>
         </>
