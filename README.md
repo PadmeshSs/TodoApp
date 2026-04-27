@@ -54,11 +54,11 @@ http://localhost:5173/
 ##  Working
 
 ### Before changes
-![Screenshot](./FrontEnd/my-app/src/assets/todo_1.png)
+![Screenshot](./assets/todo_1.png)
 
 
 ### After changes
-![Screenshot](./FrontEnd/my-app/src/assets/todo_2.png)
+![Screenshot](./assets/todo_2.png)
 
 ---
 
