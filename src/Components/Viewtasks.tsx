@@ -90,7 +90,7 @@ export default function Viewtasks({tasks, settasks}: viewtask){
                                         </td>
                                         <td>{isediting && checkid === task.id ? <input type="text" value={description} onChange={(e)=> setdescription(e.target.value)} />: task.description}</td>
                                         <td>{isediting && checkid === task.id ? <input type="date" value={date} onChange={(e)=> setdate(e.target.value)} /> : task.dueDate}</td>
-                                        <td className={getStatusClass(status)}>{isediting && checkid === task.id ? 
+                                        <td className={getStatusClass(task.status)}>{isediting && checkid === task.id ? 
                                             <select id="status" name="status" required value={task.status} onChange={(e)=>{setstatus(e.target.value as typeof status)}} className="border-[2px] border-[#c1c1c1] w-full h-[30px] rounded-md mb-3">
                                                 <option value="Pending">Pending</option>
                                                 <option value="Completed">Completed</option>
